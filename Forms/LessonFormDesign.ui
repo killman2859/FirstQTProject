@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>LessonWindow</class>
+ <widget class="QMainWindow" name="LessonWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,10 +14,36 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="prevTaskButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>370</y>
+      <width>181</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Предыдущее задание</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="nextTaskButton">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>370</y>
+      <width>181</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Следующее задание</string>
+    </property>
+   </widget>
    <widget class="QWidget" name="taskWidget" native="true">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>40</x>
       <y>20</y>
       <width>701</width>
       <height>331</height>
@@ -47,50 +73,22 @@
       <string>Сопоставьте осетинские слова и их перевод на русский</string>
      </property>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>40</x>
        <y>40</y>
        <width>631</width>
-       <height>271</height>
+       <height>31</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QVBoxLayout" name="ironsWordsLayout">
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Слово осет. 1</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_2">
-          <property name="text">
-           <string>Слово осет. 2</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_3">
-          <property name="text">
-           <string>Слово осет. 3</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_4">
-          <property name="text">
-           <string>Слово осет. 4</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_5">
-          <property name="text">
-           <string>Слово осет. 5</string>
+           <string>TextLabel</string>
           </property>
          </widget>
         </item>
@@ -106,79 +104,32 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>200</width>
+          <width>100</width>
           <height>20</height>
          </size>
         </property>
        </spacer>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="russianWordsLayout">
         <item>
-         <widget class="QPushButton" name="pushButton_6">
-          <property name="text">
-           <string>Перевод Слова 1</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_7">
-          <property name="text">
-           <string>Перевод Слова 2</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_8">
-          <property name="text">
-           <string>Перевод Слова 3</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_9">
-          <property name="text">
-           <string>Перевод Слова 4</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_10">
-          <property name="text">
-           <string>Перевод Слова 5</string>
-          </property>
-         </widget>
+         <widget class="QComboBox" name="comboBox"/>
         </item>
        </layout>
       </item>
      </layout>
     </widget>
-   </widget>
-   <widget class="QPushButton" name="prevTaskButton">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>370</y>
-      <width>181</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Предыдущее задание</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="nextTaskButton">
-    <property name="geometry">
-     <rect>
-      <x>570</x>
-      <y>370</y>
-      <width>181</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Следующее задание</string>
-    </property>
+    <widget class="QWidget" name="verticalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>40</y>
+       <width>631</width>
+       <height>281</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="allWordsVerticalLayout"/>
+    </widget>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
