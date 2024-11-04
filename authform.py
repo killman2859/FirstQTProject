@@ -13,6 +13,7 @@ class MainAutorization(QMainWindow, Ui_AuthorizationForm):
         self.main_window = None
         self.setupUi(self)
         self.authButton.clicked.connect(self.auth_button_clicked)
+        self.user_id = -1
 
     def auth_button_clicked(self):
         username = self.loginTextBox.text()
@@ -31,14 +32,15 @@ class MainAutorization(QMainWindow, Ui_AuthorizationForm):
                 return
 
             self.statusBar().showMessage('Авторизация успешна')
-
+            self.user_id = authorizated_user_info[0][0]
             self.open_main_window()
         except:
             self.statusBar().showMessage('Неверное имя пользователя или пароль')
             return
 
     def open_main_window(self):
-        self.main_window = MainWindow()
+        self.main_window = MainWindow(self.user_id)
+        self.main_window.initial_update_info()
         self.main_window.show()
         self.close()
 
