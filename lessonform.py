@@ -46,7 +46,8 @@ class LessonWindowTest(QMainWindow, Ui_LessonWindow):
         self.stopLessonButton.clicked.connect(self.stop_lesson)
 
     def generate_task(self, main_lesson_ref, user_id, main_window_ref,
-                      word_in_the_iron_and_translation={'Куыдз': 'Собака', 'Гӕды': 'Кошка'}):
+                      word_in_the_iron_and_translation={'Куыдз': 'Собака', 'Гӕды': 'Кошка', 'Тӕрхъус': 'Заяц',
+                                                        'Бирӕгъ': "Волк"}):
         self.main_window_ref = main_window_ref
         self.lesson_ref = main_lesson_ref
         self.user_id = user_id
@@ -89,37 +90,22 @@ class LessonWindowTest(QMainWindow, Ui_LessonWindow):
             self.stopLessonButton.setVisible(True)
 
     def change_data_base_info(self):
-        query1 = f"SELECT CountOfPassedLessons FROM Users WHERE ID = {self.user_id}"
 
         conn = sqlite3.connect('database.sqlite')
         cursor = conn.cursor()
-        countfofpassedlessons = cursor.execute(query1).fetchall()[0][0]
 
-        if countfofpassedlessons == 0:
-            query2 = f"UPDATE Users SET CountOfPassedLessons = {countfofpassedlessons + 1}  WHERE ID = {self.user_id}"
-            cursor.execute(query2)
+        query1 = f"SELECT ID FROM Lessons WHERE Name='{self.lesson_ref.name_of_lesson}'"
 
-            query3 = f"SELECT ID FROM Lessons WHERE NameOfLesson = '{self.name_of_lesson}'"
-            id_of_lesson = cursor.execute(query3).fetchall()[0][0]
+        lesson_id = cursor.execute(query1).fetchone()[0]
 
-            query4 = f"UPDATE Users SET PassedLessonsName = {id_of_lesson} WHERE ID = {self.user_id}"
-            cursor.execute(query4)
+        query = f"INSERT INTO PassedLessons(ID, PassedUser, PassedLesson) VALUES(NULL, {self.user_id}, {lesson_id})"
+        query2 = f"SELECT ID FROM PassedLessons WHERE ID = {self.user_id} AND PassedLesson = {lesson_id}"
+        passed_lesson_with_current_id = cursor.execute(query2).fetchall()
+
+        if len(passed_lesson_with_current_id) == 0:
+            cursor.execute(query)
         else:
-            query3 = f"SELECT PassedLessonsName FROM Users WHERE ID = {self.user_id}"
-            passed_lessons = cursor.execute(query3).fetchall()[0][0]
-
-            query4 = f"SELECT ID FROM Lessons WHERE NameOfLesson = '{self.name_of_lesson}'"
-            id_of_lesson = cursor.execute(query4).fetchall()[0][0]
-
-            if str(id_of_lesson) not in passed_lessons.split(';'):
-                query2 = f"UPDATE Users SET CountOfPassedLessons = {countfofpassedlessons + 1}  WHERE ID = {self.user_id}"
-                cursor.execute(query2)
-
-                query5 = f"UPDATE Users SET PassedLessonsName = '{passed_lessons + ';' + str(id_of_lesson)}' WHERE ID = {
-                self.user_id}"
-                cursor.execute(query5)
-            else:
-                self.statusbar.showMessage("Занятие пройденно, но количество уроков у пользователя не измененно.")
+            self.statusbar.showMessage("Урок уже пройден")
 
         conn.commit()
         conn.close()

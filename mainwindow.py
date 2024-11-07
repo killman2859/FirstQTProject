@@ -44,9 +44,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def initial_update_info(self):
         conn = sqlite3.connect('database.sqlite')
         cur = conn.cursor()
-        query1 = f"SELECT CountOfPassedLessons FROM Users WHERE ID = {self.user_id}"
+        query1 = f"SELECT PassedLesson FROM PassedLessons WHERE PassedUser = {self.user_id}"
 
-        count_of_lessons = cur.execute(query1).fetchall()[0][0]
+        count_of_lessons = len(cur.execute(query1).fetchall())
 
         query2 = f"SELECT Firstname, Secondname FROM Users WHERE ID = {self.user_id}"
 
@@ -59,9 +59,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def update_info_about_levels(self):
         conn = sqlite3.connect('database.sqlite')
         cur = conn.cursor()
-        query = f"SELECT CountOfPassedLessons FROM Users WHERE ID = {self.user_id}"
+        query1 = f"SELECT PassedLesson FROM PassedLessons WHERE ID = {self.user_id}"
 
-        count_of_lessons = cur.execute(query).fetchall()[0][0]
+        count_of_lessons = len(cur.execute(query1).fetchall())
 
         self.lessonCompletedLabel.setText(str(count_of_lessons))
 
