@@ -2,7 +2,7 @@ import sys
 import sqlite3
 
 from mainwindowinterface import Ui_MainWindow
-from lessonform import LessonWindowTest, MainLesson, initialize_lesson
+from lessonform import LessonWindowTest, MainLesson, initialize_lesson, LessonWindowImages
 
 from PyQt6.QtWidgets import QApplication, QMainWindow
 
@@ -26,7 +26,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.lessons = dict()
         self.user_id = user_id
-        self.lessons = {"Животные": Lesson("Животные", [LessonWindowTest], user_id,
+
+        # Создание уроков в списке
+        self.lessons = {"Животные": Lesson("Животные", [LessonWindowImages], user_id,
                                            self)}
         self.init_all_lessons()
 
@@ -38,9 +40,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def open_lesson(self):
         lesson_name = self.lessonsComboBox.currentText()
+
+        # Открытие урока
         if self.lessons[lesson_name].generate_lesson():
             self.hide()
 
+    # Обновление информации о количестве пройденных уроков и имени пользователя
     def initial_update_info(self):
         conn = sqlite3.connect('database.sqlite')
         cur = conn.cursor()
@@ -52,6 +57,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         firstname, secondname = cur.execute(query2).fetchall()[0]
 
+        conn.commit()
+        conn.close()
+
         self.nameAndSurnameLabel.setText(f"{firstname} {secondname}")
 
         self.lessonCompletedLabel.setText(str(count_of_lessons))
@@ -59,11 +67,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def update_info_about_levels(self):
         conn = sqlite3.connect('database.sqlite')
         cur = conn.cursor()
-        query1 = f"SELECT PassedLesson FROM PassedLessons WHERE ID = {self.user_id}"
+        query1 = f"SELECT PassedLesson FROM PassedLessons WHERE PassedUser = {self.user_id}"
 
         count_of_lessons = len(cur.execute(query1).fetchall())
 
         self.lessonCompletedLabel.setText(str(count_of_lessons))
+
+        conn.close()
 
     def quit_app(self):
         sys.exit()

@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'Forms/LessonFormDesign.ui'
+# Form implementation generated from reading ui file 'Forms/LessonTaskTestFormDesign.ui'
 #
 # Created by: PyQt6 UI code generator 6.7.1
 #

@@ -29,6 +29,8 @@ class MainAutorization(QMainWindow, Ui_AuthorizationForm):
 
         try:
             authorizated_user_info = cursor.execute(query).fetchall()
+            con.commit()
+            con.close()
 
             if len(authorizated_user_info) == 0:
                 self.statusBar().showMessage('Неверное имя пользователя или пароль')
@@ -38,6 +40,8 @@ class MainAutorization(QMainWindow, Ui_AuthorizationForm):
             self.user_id = authorizated_user_info[0][0]
             self.open_main_window()
         except:
+            con.commit()
+            con.close()
             self.statusBar().showMessage('Неверное имя пользователя или пароль')
             return
 
