@@ -28,7 +28,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.user_id = user_id
 
         # Создание уроков в списке
-        self.lessons = {"Животные": Lesson("Животные", [LessonWindowImages], user_id,
+        self.lessons = {"Животные": Lesson("Животные", [LessonWindowImages, LessonWindowTest], user_id,
                                            self)}
         self.init_all_lessons()
 

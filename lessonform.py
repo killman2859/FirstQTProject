@@ -11,6 +11,25 @@ from LessonsType.tasktypeimages import Ui_LessonWindowImages
 lesson = None
 
 
+def change_data_base_info(user_id, lesson_ref):
+    conn = sqlite3.connect('database.sqlite')
+    cursor = conn.cursor()
+
+    query1 = f"SELECT ID FROM Lessons WHERE Name='{lesson_ref.name_of_lesson}'"
+
+    lesson_id = cursor.execute(query1).fetchone()[0]
+
+    query = f"INSERT INTO PassedLessons(ID, PassedUser, PassedLesson) VALUES(NULL, {user_id}, {lesson_id})"
+    query2 = f"SELECT ID FROM PassedLessons WHERE PassedUser = {user_id} AND PassedLesson = {lesson_id}"
+    passed_lesson_with_current_id = cursor.execute(query2).fetchall()
+
+    if len(passed_lesson_with_current_id) == 0:
+        cursor.execute(query)
+
+    conn.commit()
+    conn.close()
+
+
 def read_database_info():
     conn = sqlite3.connect('database.sqlite')
     cur = conn.cursor()
@@ -45,6 +64,8 @@ class LessonWindowTest(QMainWindow, Ui_LessonWindow):
         self.id_of_task = id_of_task
         self.main_window_ref = None
 
+        self.prevTaskButton.clicked.connect(self.prev_clicked)
+        self.nextTaskButton.clicked.connect(self.next_clicked)
         self.getResButton.clicked.connect(self.check_answers)
         self.nextTaskButton.setEnabled(False)
         if self.id_of_task == 0:
@@ -89,9 +110,9 @@ class LessonWindowTest(QMainWindow, Ui_LessonWindow):
     def check_answers(self):
         for i in range(len(self.iron_words)):
             if self.answers[self.iron_words[i].text()] == self.russian_words[i].currentText():
-                self.iron_words[i].setStyleSheet("QLabel { background-color: green; }")
+                self.iron_words[i].setStyleSheet("QLabel { background-color: rgb(48, 255, 93); }")
             else:
-                self.iron_words[i].setStyleSheet("QLabel { background-color: red; }")
+                self.iron_words[i].setStyleSheet("QLabel { background-color: rgb(252, 20, 63); }")
 
         self.sender().setVisible(False)
         for i in self.russian_words:
@@ -102,41 +123,26 @@ class LessonWindowTest(QMainWindow, Ui_LessonWindow):
         else:
             self.stopLessonButton.setVisible(True)
 
-    def change_data_base_info(self):
+    def prev_clicked(self):
+        self.lesson_ref.task_references[self.id_of_task - 1].show()
+        self.close()
 
-        conn = sqlite3.connect('database.sqlite')
-        cursor = conn.cursor()
-
-        query1 = f"SELECT ID FROM Lessons WHERE Name='{self.lesson_ref.name_of_lesson}'"
-
-        lesson_id = cursor.execute(query1).fetchone()[0]
-
-        query = f"INSERT INTO PassedLessons(ID, PassedUser, PassedLesson) VALUES(NULL, {self.user_id}, {lesson_id})"
-        query2 = f"SELECT ID FROM PassedLessons WHERE ID = {self.user_id} AND PassedLesson = {lesson_id}"
-        passed_lesson_with_current_id = cursor.execute(query2).fetchall()
-
-        if len(passed_lesson_with_current_id) == 0:
-            cursor.execute(query)
-        else:
-            self.statusbar.showMessage("Урок уже пройден")
-
-        conn.commit()
-        conn.close()
+    def next_clicked(self):
+        self.lesson_ref.task_references[self.id_of_task + 1].show()
+        self.close()
 
     def stop_lesson(self):
-        self.change_data_base_info()
+        change_data_base_info(self.user_id, self.lesson_ref)
         self.main_window_ref.show()
         self.main_window_ref.update_info_about_levels()
         self.close()
-
-    def __str__(self):
-        return f'LessonWindowTest'
 
 
 # Image size 176x176 pixels
 class LessonWindowImages(QMainWindow, Ui_LessonWindowImages):
     def __init__(self, name_of_lesson="", id_of_task=0):
         super().__init__()
+        self.user_id = None
         self.setupUi(self)
         self.name_of_lesson = name_of_lesson
         self.setWindowTitle(f'Урок на тему "{name_of_lesson}"')
@@ -147,6 +153,8 @@ class LessonWindowImages(QMainWindow, Ui_LessonWindowImages):
         self.id_of_task = id_of_task
         self.main_window_ref = None
 
+        self.prevTaskButton.clicked.connect(self.prev_clicked)
+        self.nextTaskButton.clicked.connect(self.next_clicked)
         self.getResButton.clicked.connect(self.check_answers)
         self.nextTaskButton.setEnabled(False)
         if self.id_of_task == 0:
@@ -156,6 +164,12 @@ class LessonWindowImages(QMainWindow, Ui_LessonWindowImages):
         self.stopLessonButton.clicked.connect(self.stop_lesson)
 
     def generate_task(self, main_lesson_ref, user_id, main_window_ref):
+
+        # Инициализируем переменные
+        self.main_window_ref = main_window_ref
+        self.lesson_ref = main_lesson_ref
+        self.user_id = user_id
+
         # Считываем данные с ДБ
         word_list_from_db = read_database_info()
 
@@ -165,26 +179,54 @@ class LessonWindowImages(QMainWindow, Ui_LessonWindowImages):
 
         # Создание интерфейса
         for i in range(len(self.answers.keys())):
+            image_name = str(list(self.answers.keys())[i])
             label = QLabel(self)
             label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-            pixmap = QPixmap('Images/' + str(list(self.answers.keys())[i]))
+            pixmap = QPixmap('Images/' + image_name)
             label.setPixmap(pixmap)
             verticallayout = QVBoxLayout()
             verticallayout.addWidget(label)
 
             allwords = QComboBox(self)
-            allwords.addItems(list(self.answers.values()))
+            allwords.addItems(sample(list(self.answers.values()), 4))
             verticallayout.addWidget(allwords)
 
-            self.answers_refs[label] = allwords
+            self.answers_refs[image_name] = allwords
 
             self.horizontalLayout.addLayout(verticallayout)
 
     def check_answers(self):
-        pass
+        for i in range(len(self.answers_refs.values())):
+            image_name, combobox = list(self.answers_refs.keys())[i], list(self.answers_refs.values())[i]
+
+            if combobox.currentText() == self.answers[image_name]:
+                combobox.setStyleSheet("background-color: rgb(48, 255, 93);")
+            else:
+                combobox.setStyleSheet("background-color: rgb(252, 20, 63);")
+
+        self.sender().setVisible(False)
+
+        for i in list(self.answers_refs.values()):
+            i.setEnabled(False)
+
+        if self.id_of_task != len(self.lesson_ref.tasks) - 1:
+            self.nextTaskButton.setEnabled(True)
+        else:
+            self.stopLessonButton.setVisible(True)
+
+    def prev_clicked(self):
+        self.lesson_ref.task_references[self.id_of_task - 1].show()
+        self.close()
+
+    def next_clicked(self):
+        self.lesson_ref.task_references[self.id_of_task + 1].show()
+        self.close()
 
     def stop_lesson(self):
-        pass
+        change_data_base_info(self.user_id, self.lesson_ref)
+        self.main_window_ref.show()
+        self.main_window_ref.update_info_about_levels()
+        self.close()
 
 
 tasks_names = {LessonWindowTest: "LessonWindowTest", LessonWindowImages: "LessonWindowImages"}
