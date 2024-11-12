@@ -1,10 +1,11 @@
 import sys
 import sqlite3
+import csv
 
 from mainwindowinterface import Ui_MainWindow
 from lessonform import LessonWindowTest, MainLesson, initialize_lesson, LessonWindowImages
 
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog
 
 
 class Lesson:
@@ -32,11 +33,32 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                            self)}
         self.init_all_lessons()
 
+        self.exportWords.clicked.connect(self.export_words)
         self.pushButton_2.clicked.connect(self.quit_app)
         self.selectLessonButton.clicked.connect(self.open_lesson)
 
     def init_all_lessons(self):
         self.lessonsComboBox.addItems(self.lessons.keys())
+
+    def export_words(self):
+        fname = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+
+        conn = sqlite3.connect('database.sqlite')
+        cur = conn.cursor()
+
+        query1 = f"SELECT IronWord, RussianWord FROM IronWords"
+
+        words = cur.execute(query1).fetchall()
+
+        with open(fname + '/words_dictionary.csv', 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile, delimiter=';')
+            writer.writerow(['Осетинское слово', 'Русский перевод'])
+            writer.writerows(words)
+
+        conn.commit()
+        conn.close()
+
+        self.statusBar().showMessage("Слова экспортированы в words .csv")
 
     def open_lesson(self):
         lesson_name = self.lessonsComboBox.currentText()
