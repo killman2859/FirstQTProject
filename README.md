@@ -43,14 +43,14 @@
 В случае отсутствия аккаунта имеется кнопка выделенная синим текстом: "у меня нет аккаунта" по нажатию которой
 открывается окно регистрации
 
-![alt text](ImagesForMarkDown\auth.png)
+![alt text](ImagesForMarkDown/auth.png)
 
 ## Второе окно "Регистрация":
 
 В данном окне имеется четыре поля для ввода текста, сюда надо вводить данные указанные над полями. Также имеется
 кнопка "зарегистрироваться", которая регистрирует пользователя и перекидывает обратно на окно "Авторизация"
 
-![alt text](ImagesForMarkDown\registration.png)
+![alt text](ImagesForMarkDown/registration.png)
 
 ## Третье окно "Основное окно":
 
@@ -61,7 +61,7 @@
 Выбрать урок", открывающее окно урока. Также имеется кнопка "Экспортировать словарь в csv", которая экспортирует все
 слова имеющиеся в базе данных в csv файлик.
 
-![alt text](ImagesForMarkDown\main.png)
+![alt text](ImagesForMarkDown/main.png)
 
 ## Четвёртое окно "Окно урока":
 
@@ -69,7 +69,7 @@
 есть три кнопки: "Проверить", "Предыдущее задание", "Следующее задание". При нажатии на первую проверяются результаты
 выбранные в упражнении, при нажатии двух других вы перемещаетесь между упражнениями.
 
-![alt text](ImagesForMarkDown\lesson.png)
+![alt text](ImagesForMarkDown/lesson.png)
 
 # Руководство программиста
 
@@ -442,6 +442,22 @@ def initialize_lesson(lesson_name, tasks_of_lesson, user_id, main_window_ref):
 
     lesson.task_references[0].show()
 ```
+
+## База данных
+
+![alt text](ImagesForMarkDown/db1.png)
+
+Таблица **IronWords**
+![alt text](ImagesForMarkDown/db2.png)
+
+Таблица **Lessons**
+![alt text](ImagesForMarkDown/db3.png)
+
+Таблица **PassedLessons**
+![alt text](ImagesForMarkDown/db4.png)
+
+Таблица **Users**
+![alt text](ImagesForMarkDown/db5.png)
 
 # Заключение
 
