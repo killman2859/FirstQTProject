@@ -470,4 +470,7 @@ def initialize_lesson(lesson_name, tasks_of_lesson, user_id, main_window_ref):
 - https://doc.qt.io/qtforpython-5/contents.html
 - lms.yandex.ru
 
+# Презентация
+https://github.com/killman2859/FirstQTProject/blob/master/ImagesForMarkDown/pyqtproject.pptx
+
 **Проект подготовлен для Яндекс Лицея курс 2**
